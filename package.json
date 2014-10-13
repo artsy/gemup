@@ -22,7 +22,7 @@
     "node": ">= 0.10.x"
   },
   "scripts": {
-    "test": "mocha",
+    "test": "mocha"
   },
   "dependencies": {
   },
