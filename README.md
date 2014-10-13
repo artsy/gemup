@@ -9,7 +9,7 @@ Add to your script tags
 ````html
 <html>
   <body>
-    <script src='gemup.min.js'></script>
+    <script src='gemup.js'></script>
   </body>
 </html>
 ````
