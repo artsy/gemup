@@ -1,0 +1,27 @@
+<html>
+  <body>
+    <input id="my-uploader" type="file" multiple="">
+    <script type="text/javascript" src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="../gemup.js"></script>
+    <script type="text/javascript">
+      $('#my-uploader').on('change', function(e) {
+        gemup(e.target.files[0],{
+          app: 'force',
+          key: 'SECRET_GEMINI_S3_KEY',
+          fail: function(err) {
+            console.log("Ouch!", err);
+          },
+          add: function(src) {
+            console.log("We got a data-uri image client-side!", src);
+          },
+          progress: function(percent) {
+            console.log("<3 progress bars, file is this % uploaded: ", percent);
+          },
+          done: function(src) {
+            console.log("Done uploading, here's the S3 url: ", src);
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
