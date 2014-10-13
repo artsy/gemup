@@ -1,0 +1,35 @@
+{
+  "name": "gemup",
+  "version": "0.0.1",
+  "description": "Lightweight Javascript utility for using Artsy's Gemini service to upload directly to S3.",
+  "keywords": [
+    "gemup",
+    "gemini",
+    "artsy",
+    "s3",
+    "upload"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/artsy/gemup.git"
+  },
+  "author": {
+    "name": "Craig Spaeth",
+    "email": "craigspaeth@gmail.com",
+    "url": "http://craigspaeth.com"
+  },
+  "engines": {
+    "node": ">= 0.10.x"
+  },
+  "scripts": {
+    "test": "mocha",
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "express": "*",
+    "mocha": "*",
+    "should": "*",
+    "sinon": "*"
+  }
+}
