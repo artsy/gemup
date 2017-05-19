@@ -4,6 +4,7 @@
 
     // Set defaults
     var defaults = {
+      acl: 'public-read',
       app: 'force',
       add: function(){},
       progress: function(){},
@@ -26,7 +27,7 @@
     $.ajax({
       url: 'https://media.artsy.net/uploads/new.json',
       data: {
-        acl: 'public-read'
+        acl: options.acl
       },
       headers: {
         'Authorization': 'Basic ' + key
@@ -36,11 +37,13 @@
 
         // Build the S3 form data
         var formData = new FormData();
+        var geminiKey = res.policy_document.conditions[1][2]
+        var bucket = res.policy_document.conditions[0].bucket
         var data = {
           'Content-Type': 'image/png',
-          key: res.policy_document.conditions[1][2] + "/${filename}",
+          key: geminiKey + "/${filename}",
           AWSAccessKeyId: options.key,
-          acl: 'public-read',
+          acl: options.acl,
           success_action_status: res.policy_document.conditions[3].success_action_status,
           policy: res.policy_encoded,
           signature: res.signature,
@@ -52,7 +55,7 @@
 
         // Send the file upload XHR to S3
         $.ajax({
-          url: 'https://' + res.policy_document.conditions[0].bucket + '.s3.amazonaws.com',
+          url: 'https://' + bucket + '.s3.amazonaws.com',
           type: 'POST',
           processData: false,
           contentType: false,
@@ -71,7 +74,7 @@
 
           // Pull out the image url and call done
           success: function(res) {
-            options.done($(res).find('Location').text());
+            options.done($(res).find('Location').text(), geminiKey, bucket);
           }
         });
       }
