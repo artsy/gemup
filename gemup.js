@@ -39,7 +39,7 @@
         var data = {
           'Content-Type': 'image/png',
           key: res.policy_document.conditions[1][2] + "/${filename}",
-          AWSAccessKeyId: options.key,
+          AWSAccessKeyId: res.credentials,
           acl: 'public-read',
           success_action_status: res.policy_document.conditions[3].success_action_status,
           policy: res.policy_encoded,
