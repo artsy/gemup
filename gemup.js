@@ -42,7 +42,7 @@
         var data = {
           'Content-Type': 'image/png',
           key: geminiKey + "/${filename}",
-          AWSAccessKeyId: options.key,
+          AWSAccessKeyId: res.credentials,
           acl: options.acl,
           success_action_status: res.policy_document.conditions[3].success_action_status,
           policy: res.policy_encoded,
