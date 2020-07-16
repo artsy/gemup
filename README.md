@@ -4,67 +4,47 @@ Lightweight Javascript utility for using Artsy's Gemini service to upload direct
 
 ## Example
 
-Add to your script tags
+Install with Yarn/NPM:
 
-````html
-<html>
-  <body>
-    <script src='gemup.js'></script>
-  </body>
-</html>
-````
+```
+yarn add @artsy/gemup
+```
 
-or require via browserify
+Import into your project:
 
-````javascript
-var gemup = require('gemup');
-````
+```javascript
+// Note you DO NOT need { } around the import!!
+import gemup from "@artsy/gemup";
+```
 
-Use a file input
+Add an upload function and reference it on an `<input>`:
 
-````html
-<input id="my-uploader" type="file" multiple="">
-````
-
-Upload some files to S3 when someone changes it.
-
-````javascript
-$('#my-uploader').on('change', function(e) {
-  gemup(e.target.files[0],{
-    app: 'force',
-    key: 'SECRET_GEMINI_S3_KEY',
-    fail: function(err) {
+```jsx
+const handleUploadClick = (e) => {
+  gemup(e.target.files[0], {
+    app: "force",
+    key: "SECRET_GEMINI_S3_KEY",
+    fail: function (err) {
       console.log("Ouch!", err);
     },
-    add: function(src) {
+    add: function (src) {
       console.log("We got a data-uri image client-side!", src);
     },
-    progress: function(percent) {
+    progress: function (percent) {
       console.log("<3 progress bars, file is this % uploaded: ", percent);
     },
-    done: function(src) {
+    done: function (src) {
       console.log("Done uploading, here's the S3 url: ", src);
-    }
+    },
   });
-});
-````
+};
+```
 
-In coffeescript:
+...
 
-````coffeescript
-$("#my-uploader").on "change", (e) ->
-  gemup e.target.files[0],
-    app: "force"
-    key: "SECRET_GEMINI_S3_KEY"
-    fail: (err) ->
-      console.log "Ouch!", err
-    add: (src) ->
-      console.log "We got a data-uri image client-side!", src
-    progress: (percent) ->
-      console.log "<3 progress bars, file is this % uploaded: ", percent
-    done: (src) ->
-      console.log "Done uploading, here's the S3 url: ", src
-````
+```jsx
+<input type="file" multiple={false} onChange={(e) => handleUploadClick(e)} />
+```
 
 ## Notes
 
