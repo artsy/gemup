@@ -2,13 +2,35 @@
 
 Lightweight Javascript utility for using Artsy's Gemini service to upload directly to S3. Used internally at Artsy, so not useful to general public—but open source by default!
 
-## Example
+## Installation
 
-Install with Yarn/NPM:
+Use `gemup` one of three ways:
+
+### Install with Yarn/NPM
 
 ```
 yarn add @artsy/gemup
 ```
+
+### Add to your script tags
+
+```html
+<html>
+  <body>
+    <script src="gemup.js"></script>
+  </body>
+</html>
+```
+
+### Require via browserify
+
+```js
+var gemup = require("gemup");
+```
+
+## Example usage
+
+### JSX
 
 Import into your project:
 
@@ -23,7 +45,6 @@ Add an upload function and reference it on an `<input>`:
 const handleUploadClick = (e) => {
   gemup(e.target.files[0], {
     app: "force",
-    key: "SECRET_GEMINI_S3_KEY",
     fail: function (err) {
       console.log("Ouch!", err);
     },
@@ -38,12 +59,40 @@ const handleUploadClick = (e) => {
     },
   });
 };
-```
 
 ...
 
-```jsx
 <input type="file" multiple={false} onChange={(e) => handleUploadClick(e)} />
+```
+
+### Using jQuery
+
+Use a file input:
+
+```html
+<input id="my-uploader" type="file" multiple="" />
+```
+
+Upload some files to S3 when someone changes it.
+
+```js
+$("#my-uploader").on("change", function (e) {
+  gemup(e.target.files[0], {
+    app: "force",
+    fail: function (err) {
+      console.log("Ouch!", err);
+    },
+    add: function (src) {
+      console.log("We got a data-uri image client-side!", src);
+    },
+    progress: function (percent) {
+      console.log("<3 progress bars, file is this % uploaded: ", percent);
+    },
+    done: function (src) {
+      console.log("Done uploading, here's the S3 url: ", src);
+    },
+  });
+});
 ```
 
 ## Notes
