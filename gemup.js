@@ -38,10 +38,11 @@
         // Build the S3 form data
         var formData = new FormData();
         var geminiKey = res.policy_document.conditions[1][2]
+        var key = geminiKey + "/${filename}"
         var bucket = res.policy_document.conditions[0].bucket
         var data = {
           'Content-Type': 'image/png',
-          key: geminiKey + "/${filename}",
+          key: key,
           AWSAccessKeyId: res.credentials,
           acl: options.acl,
           success_action_status: res.policy_document.conditions[3].success_action_status,
@@ -74,7 +75,7 @@
 
           // Pull out the image url and call done
           success: function(res) {
-            options.done($(res).find('Location').text(), geminiKey, bucket);
+            options.done($(res).find('Location').text(), key, bucket);
           }
         });
       }
