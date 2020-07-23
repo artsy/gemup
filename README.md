@@ -32,6 +32,7 @@ Upload some files to S3 when someone changes it.
 $('#my-uploader').on('change', function(e) {
   gemup(e.target.files[0],{
     app: 'force',
+    geminiHost: 'https://media.artsy.net',
     fail: function(err) {
       console.log("Ouch!", err);
     },

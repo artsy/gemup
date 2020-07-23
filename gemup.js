@@ -6,6 +6,7 @@
     var defaults = {
       acl: 'public-read',
       app: 'force',
+      geminiHost: 'https://media.artsy.net',
       add: function(){},
       progress: function(){},
       done: function(){},
@@ -25,7 +26,7 @@
     // Get S3 credentials from Gemini
     var key = key = btoa(unescape(encodeURIComponent(options.app + ':')));
     $.ajax({
-      url: 'https://media.artsy.net/uploads/new.json',
+      url: options.geminiHost + '/uploads/new.json',
       data: {
         acl: options.acl
       },
