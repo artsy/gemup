@@ -2,69 +2,100 @@
 
 Lightweight Javascript utility for using Artsy's Gemini service to upload directly to S3. Used internally at Artsy, so not useful to general public—but open source by default!
 
-## Example
+## Installation
 
-Add to your script tags
+Use `gemup` one of three ways:
 
-````html
+### Install with Yarn/NPM
+
+```
+yarn add @artsy/gemup
+```
+
+### Add to your script tags
+
+```html
 <html>
   <body>
-    <script src='gemup.js'></script>
+    <script src="gemup.js"></script>
   </body>
 </html>
-````
+```
 
-or require via browserify
+### Require via browserify
 
-````javascript
-var gemup = require('gemup');
-````
+```js
+var gemup = require("gemup");
+```
 
-Use a file input
+## Example usage
 
-````html
-<input id="my-uploader" type="file" multiple="">
-````
+### JavaScript
+
+Import into your project:
+
+```javascript
+// Note you DO NOT need { } around the import!!
+import gemup from "@artsy/gemup";
+```
+
+Add an upload function and reference it on an `<input>`:
+
+```javascript
+const handleUploadClick = (e) => {
+  gemup(e.target.files[0], {
+    app: "force",
+    geminiHost: 'https://media.artsy.net',
+    fail: function (err) {
+      console.log("Ouch!", err);
+    },
+    add: function (src) {
+      console.log("We got a data-uri image client-side!", src);
+    },
+    progress: function (percent) {
+      console.log("<3 progress bars, file is this % uploaded: ", percent);
+    },
+    done: function (src) {
+      console.log("Done uploading, here's the S3 url: ", src);
+    },
+  });
+};
+
+...
+
+<input type="file" multiple={false} onChange={(e) => handleUploadClick(e)} />
+```
+
+### Using jQuery
+
+Use a file input:
+
+```html
+<input id="my-uploader" type="file" multiple="" />
+```
 
 Upload some files to S3 when someone changes it.
 
-````javascript
-$('#my-uploader').on('change', function(e) {
-  gemup(e.target.files[0],{
-    app: 'force',
+```js
+$("#my-uploader").on("change", function (e) {
+  gemup(e.target.files[0], {
+    app: "force",
     geminiHost: 'https://media.artsy.net',
-    fail: function(err) {
+    fail: function (err) {
       console.log("Ouch!", err);
     },
-    add: function(src) {
+    add: function (src) {
       console.log("We got a data-uri image client-side!", src);
     },
-    progress: function(percent) {
+    progress: function (percent) {
       console.log("<3 progress bars, file is this % uploaded: ", percent);
     },
-    done: function(src) {
+    done: function (src) {
       console.log("Done uploading, here's the S3 url: ", src);
-    }
+    },
   });
 });
-````
-
-In coffeescript:
-
-````coffeescript
-$("#my-uploader").on "change", (e) ->
-  gemup e.target.files[0],
-    app: "force"
-    key: "SECRET_GEMINI_S3_KEY"
-    fail: (err) ->
-      console.log "Ouch!", err
-    add: (src) ->
-      console.log "We got a data-uri image client-side!", src
-    progress: (percent) ->
-      console.log "<3 progress bars, file is this % uploaded: ", percent
-    done: (src) ->
-      console.log "Done uploading, here's the S3 url: ", src
-````
+```
 
 ## Notes
 
