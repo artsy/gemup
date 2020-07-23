@@ -30,7 +30,7 @@ var gemup = require("gemup");
 
 ## Example usage
 
-### JSX
+### JavaScript
 
 Import into your project:
 
@@ -41,7 +41,7 @@ import gemup from "@artsy/gemup";
 
 Add an upload function and reference it on an `<input>`:
 
-```jsx
+```javascript
 const handleUploadClick = (e) => {
   gemup(e.target.files[0], {
     app: "force",
