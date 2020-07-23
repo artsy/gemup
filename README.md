@@ -32,7 +32,6 @@ Upload some files to S3 when someone changes it.
 $('#my-uploader').on('change', function(e) {
   gemup(e.target.files[0],{
     app: 'force',
-    key: 'SECRET_GEMINI_S3_KEY',
     fail: function(err) {
       console.log("Ouch!", err);
     },
