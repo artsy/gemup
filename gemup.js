@@ -41,7 +41,7 @@
         var geminiKey = res.policy_document.conditions[1][2]
         var bucket = res.policy_document.conditions[0].bucket
         var data = {
-          'Content-Type': 'image/png',
+          'Content-Type': file.type,
           key: geminiKey + "/${filename}",
           AWSAccessKeyId: res.credentials,
           acl: options.acl,
