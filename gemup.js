@@ -8,7 +8,7 @@ import { v4 as uuidv4 } from 'uuid'
       acl: 'public-read',
       app: 'force',
       geminiHost: 'https://media.artsy.net',
-      storeWithOriginalFilename: false,
+      storeWithOriginalFilename: true,
       add: function(){},
       progress: function(){},
       done: function(){},
