@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid'
 (function() {
 
   var gemup = function(file, options) {
@@ -7,6 +8,7 @@
       acl: 'public-read',
       app: 'force',
       geminiHost: 'https://media.artsy.net',
+      storeWithOriginalFilename: false,
       add: function(){},
       progress: function(){},
       done: function(){},
@@ -40,9 +42,10 @@
         var formData = new FormData();
         var geminiKey = res.policy_document.conditions[1][2]
         var bucket = res.policy_document.conditions[0].bucket
+        const sourceKey = options.storeWithOriginalFilename ? `${geminiKey}/${filename}` : `${geminiKey}/${uuidv4()}` 
         var data = {
           'Content-Type': file.type,
-          key: geminiKey + "/${filename}",
+          key: sourceKey,
           AWSAccessKeyId: res.credentials,
           acl: options.acl,
           success_action_status: res.policy_document.conditions[3].success_action_status,
