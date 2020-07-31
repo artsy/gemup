@@ -12,22 +12,6 @@ Use `gemup` one of three ways:
 yarn add @artsy/gemup
 ```
 
-### Add to your script tags
-
-```html
-<html>
-  <body>
-    <script src="gemup.js"></script>
-  </body>
-</html>
-```
-
-### Require via browserify
-
-```js
-var gemup = require("gemup");
-```
-
 ## Example usage
 
 ### JavaScript
