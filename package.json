@@ -1,6 +1,6 @@
 {
   "name": "@artsy/gemup",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "description": "Lightweight Javascript utility for using Artsy's Gemini service to upload directly to S3.",
   "keywords": [
     "gemup",
