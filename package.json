@@ -25,7 +25,6 @@
     "test": "mocha"
   },
   "dependencies": {
-    "uuid": "^8.3.0"
   },
   "devDependencies": {
     "express": "*",
