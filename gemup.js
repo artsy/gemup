@@ -1,51 +1,58 @@
-(function() {
-  var uuid = require("uuid")
-
-  var gemup = function(file, options) {
+(function () {
+  const gemup = function (file, options) {
+    function generateUUID() {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        const r = Math.random() * 16 | 0;
+        const v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      });
+    }
 
     // Set defaults
-    var defaults = {
+    const defaults = {
       acl: 'public-read',
       app: 'force',
       geminiHost: 'https://media.artsy.net',
       sanitizeFilename: false,
-      add: function(){},
-      progress: function(){},
-      done: function(){},
-      fail: function(){}
-    }
-    for (key in defaults) {
+      add: function () { },
+      progress: function () { },
+      done: function () { },
+      fail: function () { }
+    };
+
+    for (let key in defaults) {
       if (!options[key]) options[key] = defaults[key];
     }
 
     // Read the file & send the client-side base64 url
-    var reader = new FileReader();
-    reader.onload = function() {
+    const reader = new FileReader();
+
+    reader.onload = function () {
       options.add(reader.result);
-    }
+    };
+
     reader.readAsDataURL(file);
 
     // Get S3 credentials from Gemini
-    var key = key = btoa(unescape(encodeURIComponent(options.app + ':')));
-    $.ajax({
-      url: options.geminiHost + '/uploads/new.json',
-      data: {
-        acl: options.acl
-      },
-      headers: {
-        'Authorization': 'Basic ' + key
-      },
-      error: options.fail,
-      success: function(res) {
+    const key = btoa(unescape(encodeURIComponent(`${options.app}:`)));
+    const request = new XMLHttpRequest();
+
+    request.open('GET', `${options.geminiHost}/uploads/new.json?acl=${options.acl}`, true);
+
+    request.setRequestHeader('Authorization', `Basic ${key}`);
+
+    request.addEventListener('load', function () {
+      if (request.status >= 200 && request.status < 400) {
+        const res = JSON.parse(request.responseText);
 
         // Build the S3 form data
-        var formData = new FormData();
-        var geminiKey = res.policy_document.conditions[1][2]
-        var bucket = res.policy_document.conditions[0].bucket
-        
-        var data = {
+        const formData = new FormData();
+        const geminiKey = res.policy_document.conditions[1][2];
+        const bucket = res.policy_document.conditions[0].bucket;
+
+        const data = {
           'Content-Type': file.type,
-          key: geminiKey + "/" + (options.sanitizeFilename ? uuid.v4() : "${filename}"),
+          key: `${geminiKey}/${options.sanitizeFilename ? generateUUID() : "${filename}"}`,
           AWSAccessKeyId: res.credentials,
           acl: options.acl,
           success_action_status: res.policy_document.conditions[3].success_action_status,
@@ -53,40 +60,47 @@
           signature: res.signature,
           file: file
         };
-        for (key in data) {
+
+        for (let key in data) {
           formData.append(key, data[key]);
         }
 
         // Send the file upload XHR to S3
-        $.ajax({
-          url: 'https://' + bucket + '.s3.amazonaws.com',
-          type: 'POST',
-          processData: false,
-          contentType: false,
-          data: formData,
-          error: options.fail,
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', `https://${bucket}.s3.amazonaws.com`, true);
+        xhr.onerror = options.fail;
 
-          // Send progress updates
-          xhr: function() {
-            var xhr = $.ajaxSettings.xhr();
-            if (!xhr.upload) return xhr;
-            xhr.upload.addEventListener('progress', function(e) {
-              options.progress(e.loaded / e.total);
-            });
-            return xhr;
-          },
-
-          // Pull out the image url and call done
-          success: function(res) {
-            options.done($(res).find('Location').text(), geminiKey, bucket);
+        // Send progress updates
+        xhr.upload.addEventListener('progress', function (e) {
+          if (e.lengthComputable) {
+            options.progress(e.loaded / e.total);
           }
         });
+
+        // Pull out the image URL and call done
+        xhr.addEventListener('load', function () {
+          if (xhr.status >= 200 && xhr.status < 400) {
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(xhr.responseText, 'text/xml');
+            const location = xmlDoc.getElementsByTagName('Location')[0].textContent;
+            options.done(location, geminiKey, bucket);
+          } else {
+            options.fail(xhr.statusText);
+          }
+        });
+
+        xhr.send(formData);
+      } else {
+        options.fail(request.statusText);
       }
     });
-  }
+
+    request.addEventListener('error', options.fail);
+    request.send();
+  };
 
   // Export for CommonJS & window global
-  if (typeof module != 'undefined') {
+  if (typeof module !== 'undefined') {
     module.exports = gemup;
   } else {
     window.gemup = gemup;
