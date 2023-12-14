@@ -1,10 +1,9 @@
 <html>
   <body>
     <input id="my-uploader" type="file" multiple="">
-    <script type="text/javascript" src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
     <script type="text/javascript" src="../gemup.js"></script>
     <script type="text/javascript">
-      $('#my-uploader').on('change', function(e) {
+      document.getElementById('my-uploader').addEventListener('change', function(e) {
         gemup(e.target.files[0],{
           app: 'force',
           geminiHost: 'https://media.artsy.net',
